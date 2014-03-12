@@ -1,0 +1,20 @@
+<Body:>
+    <div class="questions">
+        <h4>Selected questions:</h4>
+            {#each _page.selectedQuestions as :selectedQuestion}
+                <p><button x-bind="click: student.selectQuestion" class="border">{{:selectedQuestion.text}}</button></p>
+            {/}
+        <hr noshade size="5">
+    </div>
+    <div>
+        <form x-bind="submit: student.addAnswer">
+            <h3>Your answer</h3>
+            <fieldset>
+                <label>Name</label>
+                <input class="border" type="text" value={_page.newAnswer.name}>
+                <label>Answer</label>
+                <textarea class="border">{_page.newAnswer.note}</textarea><br>
+                <button type="submit" class="btn">Add</button>
+            </fieldset>
+        </form>
+    </div>

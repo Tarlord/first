@@ -1,0 +1,33 @@
+<import: src="./home">
+<import: src="./student">
+<import: src="./professor">
+
+<Header:>
+  <body class="{{dash($ns)}}">
+  <ui:connectionAlert>
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" href="/">Project</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <!-- Other templates are included like HTML elements -->
+            <app:navLink title="Home" href="/">
+            <app:navLink title="Student's page" href="/student">
+            <app:navLink title="Professor's page" href="/professor">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="container">
+
+<Footer:>
+    </div>
+  </div>
+
+<navLink:>
+  <li class="{{#if equal($url, @href)}}active{{/}}">
+    <a href="{{@href}}">{{@title}}</a>
+  </li>

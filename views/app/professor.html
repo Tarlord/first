@@ -1,0 +1,100 @@
+<Body:>
+
+    <div class="createQuestions">
+        <h4>Put your question here:</h4>
+        <form x-bind="submit: professor.addQuestion">
+            <fieldset>
+                <input type="text" value={_page.newQuestion.text}><br>
+                <button type="submit" >Add new question</button>
+            </fieldset>
+        </form>
+        <hr noshade size="5">
+        <h4>All questions:</h4>
+        <table>
+            <thead>
+            <th>Question</th>
+            <th>Remove</th>
+            </thead>
+            <tbody>
+            {#each _page.questions as :question}
+            <tr>
+                <td>{{:question.text}}</td>
+                <td>
+                    <button  x-bind="click: professor.removeQuestion">Remove</button>
+                </td>
+                <td>
+                    <select class="select">
+                        <option selected="{equal(:question.select, 'True')}">
+                            True
+                        </option>
+                        <option selected="{equal(:question.select, 'False')}">
+                            False
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            {/}
+            </tbody>
+        </table>
+        <hr noshade size="5">
+        <h4>Create groups:</h4>
+        <form x-bind="submit: professor.addGroup">
+            <input type="text" value={_page.newGroup.text}><br>
+            <button type="submit" >Add new group</button>
+        </form>
+        <hr noshade size="5">
+        <h4>Group list:</h4>
+        <table>
+            <thead>
+                <th>Name</th>
+                <th>Remove</th>
+            </thead>
+            <tbody>
+                {#each _page.groups as :group}
+                <tr>
+                    <td>{{:group.text}}</td>
+                    <td><button x-bind="click: professor.removeGroup">Remove</button></td>
+                </tr>
+                {/}
+            </tbody>
+        </table>
+    </div>
+    <div class="liveQuestions">
+        <h4>Live questions:</h4>
+            {#each _page.selectedQuestions as :selectedQuestion}
+                <p class="selectedQuestions">{{:selectedQuestion.text}}</p>
+            {/}
+        <hr noshade size="5">
+        <h4>All answers:</h4>
+        <table>
+            <thead>
+            <th>Student</th>
+            <th>Answer</th>
+            <th>For question:</th>
+            <th>Group</th>
+            <th>Remove</th>
+            </thead>
+            <tbody>
+                {#each _page.answers as :answer}
+                <tr>
+                    <td>{{:answer.name}}</td>
+                    <td>{{:answer.note}}</td>
+                    <td>{{:answer.question}}</td>
+                    <td>
+                        <select class="select">
+                            {#each _page.groups as :group}
+                            <option selected="{equal(:answer.groupId, :group.id)}">
+                               {{:group.text}}
+                            </option>
+                            {/}
+                        </select>
+                    </td>
+                    <td><button x-bind="click: professor.removeAnswer">Remove</button></td>
+                </tr>
+                {/}
+            </tbody>
+        </table>
+        <h4>Answers by groups:</h4>
+    </div>
+
+

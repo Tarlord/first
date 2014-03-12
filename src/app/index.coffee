@@ -1,7 +1,7 @@
+_ = require 'lodash'
 app = require('derby').createApp(module)
   .use(require 'derby-ui-boot')
   .use(require '../../ui/index.coffee')
-  .use(require 'lodash')
 
 
 # ROUTES #
@@ -91,13 +91,13 @@ app.fn 'professor.removeAnswer', (e) ->
   @model.del 'answers.' + answer.id
 
 app.on 'model', (model) ->
-  model.fn 'answersByGroups', (answers, groups) ->
-    result = {}
-    preresult = []
-    for group in groups
-      for answer in answers
-        if answer.groupId == group.id
-          result = {name: group.text, text: answer.note, group: group.text, student: answer.name, question: answer.question}
-          preresult.push result
-
-    return  Object.keys preresult
+  model.fn 'answersByGroups', (answers) ->
+    result = []
+    groups = {}
+    for answer in answers
+      if groups[answer.groupId] == undefined
+        groups[answer.groupId] = []
+      groups[answer.groupId].push answer.id
+    for key, value of groups
+      result.push {groupId: key, answerIds: value}
+    return  result

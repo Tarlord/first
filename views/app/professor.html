@@ -95,6 +95,16 @@
             </tbody>
         </table>
         <h4>Answers by groups:</h4>
+        {#each _page.answersByGroups as :answerByGroups}
+            <p class="sortedGroups">Группа:</p>
+            {{groups[:answerByGroups.groupId].text}}<hr>
+                <p class="sortedAnswers">Ответы:</p>
+                {#each _page.answers as :answer}
+                    {#if equal(:answer.groupId, :answerByGroups.groupId)}
+                        <p>{{:answer.name}} - {{:answer.note}}</p>
+                {/}
+            {/}<hr>
+        {/}
     </div>
 
 

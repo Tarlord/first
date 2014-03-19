@@ -103,7 +103,7 @@
                     {{groups[:answerByGroups.groupId].text}}<hr>
                         <p class="sortedAnswers">Answers:</p>
                         {{#each :answerByGroups.answerIds as :answerId}}
-                                <p>{{answers[:answerId].name}}</p>
+                                <p>{{answers[:answerId].name}} : {{answers[:answerId].note}}</p>
                         {{/}}<hr>
                 {{/}}
             {{/}}

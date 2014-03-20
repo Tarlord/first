@@ -35,8 +35,6 @@ app.get '/professor', (page, model, params, next) ->
 
     model.at('groups').filter().ref '_page.groups'
 
-    model.start 'answersByGroups', '_page.answersByGroups', '_page.answers', '_page.groups'
-
     page.render 'professor'
 
 # CONTROLLER FUNCTIONS #
@@ -45,7 +43,7 @@ app.fn 'student.addAnswer', () ->
   newAnswer = @model.del '_page.newAnswer'
   return unless newAnswer
   newAnswer.questionId = @model.get '_page.selectedQuestion.id'
-  newAnswer.groupId = null
+  newAnswer.groupIds = null
   @model.add 'answers', newAnswer
 
 app.fn 'student.selectQuestion', (e) ->
@@ -60,11 +58,16 @@ app.fn 'professor.addQuestion', () ->
 
 app.fn 'professor.removeQuestion', (e) ->
   question = e.get ':question'
+  answers = @model.get 'answers'
+  for answer in answers
+    if answer.questionId == question.id
+      @model.set answer.questionId, null
   @model.del 'questions.' + question.id
 
 app.fn 'professor.addGroup', () ->
   newGroup = @model.del '_page.newGroup'
   return unless newGroup
+  newGroup.questionId = @model.get '_page.activeQuestion.id'
   @model.add 'groups', newGroup
 
 app.fn 'professor.removeGroup', (e) ->
@@ -75,14 +78,26 @@ app.fn 'professor.removeAnswer', (e) ->
   answer = e.get ':answer'
   @model.del 'answers.' + answer.id
 
-app.on 'model', (model) ->
-  model.fn 'answersByGroups', (answers) ->
-    result = []
-    groups = {}
-    for answer in (answers || [])
-      if groups[answer.groupId] == undefined
-        groups[answer.groupId] = []
-      groups[answer.groupId].push answer.id
-    for key, value of groups
-      result.push {groupId: key, answerIds: value}
-    return  result
+app.fn 'professor.selectQuestion', (e) ->
+  question = e.get ':selectedQuestion'
+  @model.set '_page.selectedAnswer', null
+  @model.set '_page.activeQuestion', question
+
+app.fn 'professor.selectGroup', (e) ->
+  group = e.get ':group'
+  selectedAnswer = @model.get '_page.selectedAnswer'
+  @model.push 'answers.' + selectedAnswer.id + '.groupIds', group.id
+
+app.fn 'professor.selectAnswer', (e) ->
+  answer =e.get ':answer'
+  @model.set '_page.selectedAnswer', answer
+
+app.fn 'professor.removeFromGroup', (e) ->
+  index = null
+  group = e.get ':group'
+  selectedAnswer = @model.get '_page.selectedAnswer'
+  result = @model.get 'answers.' + selectedAnswer.id + '.groupIds'
+  for key, value of result
+    if value == group.id
+      index = key
+  @model.remove 'answers.'+selectedAnswer.id+'.groupIds', index

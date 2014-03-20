@@ -36,78 +36,67 @@
             {/}
             </tbody>
         </table>
-        <hr noshade size="5">
-        <h4>Create groups:</h4>
-        <form x-bind="submit: professor.addGroup">
-            <input type="text" value={_page.newGroup.text}><br>
-            <button type="submit" >Add new group</button>
-        </form>
-        <hr noshade size="5">
-        <h4>Group list:</h4>
-        <table>
-            <thead>
-                <th>Name</th>
-                <th>Remove</th>
-            </thead>
-            <tbody>
-                {#each _page.groups as :group}
-                <tr>
-                    <td>{{:group.text}}</td>
-                    <td><button x-bind="click: professor.removeGroup">Remove</button></td>
-                </tr>
-                {/}
-            </tbody>
-        </table>
+
+
     </div>
-    <div class="liveQuestions">
+    <hr>
+    <div><center>
         <h4>Live questions:</h4>
             {#each _page.selectedQuestions as :selectedQuestion}
-                <p class="selectedQuestions">{{:selectedQuestion.text}}</p>
+                <p><button x-bind="click: professor.selectQuestion" class="selectedQuestions">{{:selectedQuestion.text}}</button></p>
             {/}
+        </center>
         <hr noshade size="5">
-        <h4>All answers:</h4>
-        <table>
+    </div>
+    <div>
+
+        <table border="1px solid">
+           <caption>Selected question is : {_page.activeQuestion.text}</caption>
             <thead>
-            <th>Student</th>
-            <th>Answer</th>
-            <th>For question:</th>
-            <th>Group</th>
-            <th>Remove</th>
+            <th style="width:200px;">Answers</th>
+            <th style="width:100px">Remove answer</th>
+            <th  colspan="999">Groups</th>
             </thead>
-            <tbody>
-                {#each _page.answers as :answer}
-                <tr>
-                    <td>{{:answer.name}}</td>
-                    <td>{{:answer.note}}</td>
-                    <td>{{:answer.question}}</td>
-                    <td>
-                        <select class="select">
-                            <option>Not selected</option>
-                            {#each _page.groups as :group}
-                            <option selected="{equal(:answer.groupId, :group.id)}">
-                               {{:group.text}}
-                            </option>
-                            {/}
-                        </select>
-                    </td>
-                    <td><button x-bind="click: professor.removeAnswer">Remove</button></td>
-                </tr>
+            <thead>
+                <th>Name / Answer</th>
+                <th></th>
+                {#with groups}
+                {#each _page.groups as :group}
+                    {#if equal(:group.questionId, _page.activeQuestion.id)}
+                        <th style="width:150px">{{:group.text}} <button x-bind="click: professor.removeGroup">X</button></th>
+                    {/}
                 {/}
-            </tbody>
+                {/}
+           </thead>
+           <tbody>
+                {#each _page.answers as :answer}
+                    {#if equal(:answer.questionId, _page.activeQuestion.id)}
+                    <tr>
+                        <td><button style="width:200px" x-bind="click: professor.selectAnswer">{{:answer.name}} <br> {{:answer.note}}</button></td>
+                        <td><button style="width:150px" x-bind="click: professor.removeAnswer">Remove answer</button></td>
+                        {#each _page.groups as :group}
+                            {#if equal(:group.questionId, _page.activeQuestion.id)}
+                                <td style="text-align: center">
+                                    <button  x-bind="click: professor.selectGroup">Select</button>
+                                    <button  x-bind="click: professor.removeFromGroup">Remove</button>
+                                </td>
+                            {/}
+                        {/}
+
+                    </tr>
+                    {/}
+                {/}
+           </tbody>
         </table>
-        <h4>Answers by groups:</h4>
-        {#with _page.answersByGroups}
-            {{#each _page.answersByGroups as :answerByGroups}}
-                {{#if not(equal(:answerByGroups.groupId, 'null'))}}
-                    <p class="sortedGroups">Group:</p>
-                    {{groups[:answerByGroups.groupId].text}}<hr>
-                        <p class="sortedAnswers">Answers:</p>
-                        {{#each :answerByGroups.answerIds as :answerId}}
-                                <p>{{answers[:answerId].name}} : {{answers[:answerId].note}}</p>
-                        {{/}}<hr>
-                {{/}}
-            {{/}}
+        <input type="text" value="{_page.newGroup.text}" style="width:100px" placeholder="Create group">
+        <button x-bind="click: professor.addGroup">Ok</button>
+        {#with _page.answers}
+            <h4>Selected answer from {_page.selectedAnswer.name} is {_page.selectedAnswer.note}, in groups:</h4>
+                {#each _page.selectedAnswer.groupIds as :groupId}
+                    <p>{{groups[:groupId].text}}</p>
+                {/}
         {/}
     </div>
+
 
 

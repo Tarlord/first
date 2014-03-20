@@ -8,16 +8,21 @@
             <hr noshade size="5">
         </div>
         <div>
-            <form x-bind="submit: student.addAnswer">
-                <h3>Your answer</h3>
-                <fieldset>
-                    <label>Name</label>
-                    <input class="border" type="text" value={_page.newAnswer.name}>
-                    <label>Answer</label>
-                    <textarea class="border">{_page.newAnswer.note}</textarea><br>
-                    <button type="submit" class="btn">Add</button>
-                </fieldset>
-            </form>
+            {#if _page.selectedQuestion}
+                <h4>Now you are answering for a question: {_page.selectedQuestion.text}</h4>
+                <form x-bind="submit: student.addAnswer">
+                    <h3>Your answer</h3>
+                    <fieldset>
+                        <label>Name</label>
+                        <input class="border" type="text" value={_page.newAnswer.name}>
+                        <label>Answer</label>
+                        <textarea class="border">{_page.newAnswer.note}</textarea><br>
+                        <button type="submit" class="btn">Add</button>
+                    </fieldset>
+                </form>
+            {else}
+                <p>Please select question.</p>
+            {/}
         </div>
     {else}
     <p>You have no available questions, please put it on.</p>
